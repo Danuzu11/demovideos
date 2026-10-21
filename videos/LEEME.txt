@@ -1,0 +1,55 @@
+VIDEOS DE LA DEMO - PLAN 200 y PLAN 300
+========================================
+
+Dónde va cada archivo
+---------------------
+videos/plan-200/   -> videos del Plan 200
+videos/plan-300/   -> videos del Plan 300
+
+Nombralos numerados para que respeten el orden:
+  01-stock.mp4        + 01-stock.jpg
+  02-alertas.mp4      + 02-alertas.jpg
+  03-reportes.mp4     + 03-reportes.jpg
+
+El .jpg es la miniatura (poster) que se ve antes de reproducir.
+
+
+1) Convertir el video (ffmpeg)
+------------------------------
+Grabación de pantalla de 1-3 minutos:
+
+  ffmpeg -i entrada.mp4 -c:v libx264 -crf 22 -preset slow -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 96k videos/plan-200/01-stock.mp4
+
+- pix_fmt yuv420p -> se ve bien en iPhone y Safari (si no, pantalla negra).
+- faststart       -> permite adelantar/rebobinar sin descargar todo.
+- CRF 22          -> buen equilibrio calidad/peso. Si pesa mucho, subi a 24/26.
+
+2) Generar la miniatura
+-----------------------
+  ffmpeg -ss 00:00:02 -i videos/plan-200/01-stock.mp4 -frames:v 1 -q:v 2 videos/plan-200/01-stock.jpg
+
+3) Registrar el video en la landing
+-----------------------------------
+Abrir index.html y agregar una linea en el bloque DEMOS:
+
+  { titulo: "Gestión de stock",
+    src:    "videos/plan-200/01-stock.mp4",
+    poster: "videos/plan-200/01-stock.jpg" },
+
+No hay que tocar nada mas del HTML.
+
+
+PESO MAXIMO (importante)
+------------------------
+Vercel plan Hobby: si el deploy sube mas de 100 MB de archivos, FALLA.
+Presupuesto de video: ~90 MB en total (los dos planes juntos).
+
+A 1080p y CRF 22 una grabacion de pantalla rinde unos 8-12 MB por minuto:
+  6 videos de 1.5 min  ->  ~60-80 MB  (entra)
+  6 videos de 3 min    ->  ~150 MB    (NO entra)
+
+Antes de subir, medir el peso total (PowerShell):
+
+  Get-ChildItem videos -Recurse -Include *.mp4,*.jpg |
+    Measure-Object Length -Sum |
+    ForEach-Object { "{0:N1} MB" -f ($_.Sum / 1MB) }

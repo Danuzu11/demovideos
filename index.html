@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión Integral</title>
+    <!-- Cargamos Tailwind directamente por CDN para que funcione sin instalar nada -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Paleta dorada de la marca (reemplaza al azul) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            DEFAULT: "#D4AF37",
+                            dark: "#A67C00"
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- Navegación -->
+    <nav class="bg-white shadow-sm py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
+        <div class="font-extrabold text-2xl text-gold-dark tracking-tight">Danzusoft</div>
+        <a href="#demos" class="bg-gold text-gray-900 px-5 py-2 rounded-lg shadow hover:bg-gold-dark transition font-medium">Ver Planes</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="text-center py-16 px-6 max-w-5xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+            DEMO sistemas de inventarios importaciones
+        </h1>
+        <p class="text-lg text-gray-600 mb-10 max-w-3xl mx-auto">
+            Sustituya la fragilidad de las celdas por la solidez de la ingeniería. El arte de gestionar su negocio donde el inventario fluye con precisión con apoyo de ingenieria.
+        </p>
+
+        <!-- Video Placeholder (YouTube) -->
+        <div class="relative w-full max-w-4xl mx-auto rounded-xl shadow-2xl overflow-hidden aspect-video border-4 border-white bg-gray-900">
+            <!-- NOTA: Reemplaza "dQw4w9WgXcQ" con el ID de tu video de YouTube -->
+            <iframe
+                class="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/aSte18D2_YE?rel=0&showinfo=0&controls=1&autoplay=0&mute=0"
+                title="Demo del Sistema"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <p class="text-sm text-gray-500 mt-4 italic">* Video demostrativo de cómo funciona la plataforma en vivo.</p>
+    </header>
+
+    <!-- Demos por plan -->
+    <section id="demos" class="max-w-6xl mx-auto px-6 py-14">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">Dos demos para ver en video</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                Elegí el plan y mirá cada funcionalidad en detalle, sin instalar nada.
+            </p>
+        </div>
+
+        <!-- Pestañas centradas -->
+        <div class="flex justify-center gap-3 mb-8" role="tablist" aria-label="Planes">
+            <button
+                type="button"
+                id="tab-plan-200"
+                class="tab-btn px-6 py-3 rounded-lg font-bold shadow-sm border-2 border-gold bg-gold text-gray-900 transition"
+                role="tab"
+                aria-selected="true"
+                aria-controls="demo-panel"
+                data-plan="plan-200">
+                Plan 200
+            </button>
+            <button
+                type="button"
+                id="tab-plan-300"
+                class="tab-btn px-6 py-3 rounded-lg font-bold shadow-sm border-2 border-gold bg-white text-gray-700 transition hover:bg-yellow-50"
+                role="tab"
+                aria-selected="false"
+                aria-controls="demo-panel"
+                data-plan="plan-300">
+                Plan 300
+            </button>
+        </div>
+
+        <!-- Contenido de la pestaña activa -->
+        <div id="demo-panel" class="max-w-4xl mx-auto" role="tabpanel" aria-labelledby="tab-plan-200">
+            <p id="demo-desc" class="text-center text-gray-600 mb-6"></p>
+
+            <div id="demo-video-box" class="relative rounded-xl shadow-2xl overflow-hidden border-4 border-white bg-gray-900 aspect-video">
+                <video id="demo-video" class="absolute inset-0 w-full h-full object-contain" controls controlslist="nodownload" playsinline preload="metadata"></video>
+            </div>
+
+            <div id="demo-empty" class="hidden rounded-xl border-2 border-dashed border-gold bg-white p-12 text-center text-gray-500">
+                Los videos de este plan se están preparando.
+            </div>
+
+            <!-- Tira de miniaturas: clic para cambiar el video principal -->
+            <div id="demo-thumbs" class="flex flex-wrap justify-center gap-3 mt-6"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-10 text-center text-sm px-6">
+        <p class="mb-2">© 2026 Danzusoft.</p>
+        <p>No se incluyen equipos físicos ni infraestructura de hardware.</p>
+    </footer>
+
+    <script>
+        /* ============================================================
+           CARGÁ ACÁ LOS VIDEOS DE CADA PLAN
+           Agregá un archivo .mp4 y su miniatura .jpg en la carpeta del
+           plan y completá una línea por video. No hace falta tocar nada
+           más del HTML.
+
+           Ejemplo:
+           {
+               titulo: "Gestión de stock",
+               src:    "videos/plan-200/01-stock.mp4",
+               poster: "videos/plan-200/01-stock.jpg"
+           }
+           ============================================================ */
+        const DEMOS = {
+            "plan-200": {
+                titulo: "Plan 200",
+                /* Reemplazá esta descripción por la de tu plan */
+                descripcion: "Plan 200: recorré en video las funcionalidades de este plan, una por una.",
+                videos: [
+                    { titulo: "Vista inicial y login", src: "videos/plan-200/vistaInicialLogin.mp4" },
+                    { titulo: "Módulos Plan 200",       src: "videos/plan-200/modulos200.mp4" },
+                    { titulo: "Ganancias y reportes",   src: "videos/plan-200/gananciasyreportes.mp4" },
+                ]
+            },
+            "plan-300": {
+                titulo: "Plan 300",
+                /* Reemplazá esta descripción por la de tu plan */
+                descripcion: "Plan 300: recorré en video las funcionalidades de este plan, una por una.",
+                videos: [
+                    { titulo: "Módulos Plan 300", src: "videos/plan-300/modulos300.mp4" },
+                ]
+            }
+        };
+
+        const tabButtons = document.querySelectorAll(".tab-btn");
+        const descEl = document.getElementById("demo-desc");
+        const videoBox = document.getElementById("demo-video-box");
+        const emptyBox = document.getElementById("demo-empty");
+        const videoEl = document.getElementById("demo-video");
+        const thumbsEl = document.getElementById("demo-thumbs");
+        const panelEl = document.getElementById("demo-panel");
+
+        function selectVideo(video) {
+            videoEl.src = video.src;
+            if (video.poster) {
+                videoEl.poster = video.poster;
+            } else {
+                videoEl.removeAttribute("poster");
+            }
+            videoEl.load();
+            const playing = videoEl.play();
+            if (playing && typeof playing.catch === "function") {
+                playing.catch(function () { /* el navegador puede bloquear el autoplay */ });
+            }
+        }
+
+        function render(planKey) {
+            const plan = DEMOS[planKey];
+            if (!plan) return;
+
+            descEl.textContent = plan.descripcion;
+            thumbsEl.innerHTML = "";
+
+            if (!plan.videos || plan.videos.length === 0) {
+                videoBox.classList.add("hidden");
+                emptyBox.classList.remove("hidden");
+                videoEl.pause();
+                videoEl.removeAttribute("src");
+                videoEl.load();
+                return;
+            }
+
+            emptyBox.classList.add("hidden");
+            videoBox.classList.remove("hidden");
+
+            plan.videos.forEach(function (video) {
+                const thumb = document.createElement("button");
+                thumb.type = "button";
+                thumb.className =
+                    "w-28 md:w-32 rounded-lg overflow-hidden border-2 border-gold/60 hover:border-gold shadow focus:outline-none focus:ring-2 focus:ring-gold";
+
+                if (video.poster) {
+                    const img = document.createElement("img");
+                    img.src = video.poster;
+                    img.alt = video.titulo || "Video";
+                    img.loading = "lazy";
+                    img.className = "w-full h-16 md:h-20 object-cover";
+                    thumb.appendChild(img);
+                } else {
+                    const label = document.createElement("span");
+                    label.className = "block w-full h-16 md:h-20 bg-gray-900 text-white text-xs flex items-center justify-center px-2";
+                    label.textContent = video.titulo || "Video";
+                    thumb.appendChild(label);
+                }
+
+                thumb.addEventListener("click", function () {
+                    selectVideo(video);
+                });
+
+                thumbsEl.appendChild(thumb);
+            });
+
+            selectVideo(plan.videos[0]);
+        }
+
+        tabButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                tabButtons.forEach(function (other) {
+                    const active = other === button;
+                    other.setAttribute("aria-selected", active ? "true" : "false");
+                    other.classList.toggle("bg-gold", active);
+                    other.classList.toggle("text-gray-900", active);
+                    other.classList.toggle("bg-white", !active);
+                    other.classList.toggle("text-gray-700", !active);
+                });
+
+                panelEl.setAttribute("aria-labelledby", button.id);
+                render(button.dataset.plan);
+            });
+        });
+
+        render("plan-200");
+    </script>
+
+</body>
+</html>
