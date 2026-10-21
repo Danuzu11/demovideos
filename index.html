@@ -30,18 +30,18 @@
     </nav>
 
     <!-- Hero Section -->
-    <header class="text-center py-16 px-6 max-w-5xl mx-auto">
+    <header class="text-center pt-10 pb-4 px-6 max-w-5xl mx-auto">
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
             Demo Sistemas de inventarios e importaciones
         </h1>
-        <p class="text-lg text-gray-600 mb-10 max-w-3xl mx-auto">
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
             Sustituya la fragilidad de las celdas por la solidez de la ingeniería. El arte de gestionar su negocio donde el inventario fluye con precisión con apoyo de ingenieria.
         </p>
 
     </header>
 
     <!-- Demos por plan -->
-    <section id="demos" class="max-w-6xl mx-auto px-6 py-14">
+    <section id="demos" class="max-w-6xl mx-auto px-6 pt-4 pb-14">
         <!-- Pestañas centradas -->
         <div class="flex justify-center gap-3 mb-8" role="tablist" aria-label="Planes">
             <button
@@ -68,18 +68,21 @@
 
         <!-- Contenido de la pestaña activa -->
         <div id="demo-panel" class="max-w-4xl mx-auto" role="tabpanel" aria-labelledby="tab-plan-200">
-            <p id="demo-desc" class="text-center text-gray-600 mb-6"></p>
+            <p id="demo-desc" class="text-center text-gray-600 mb-5"></p>
+
+            <!-- Selector de video: clic para cambiar. SIEMPRE arriba del reproductor -->
+            <div id="demo-thumbs" class="flex flex-wrap justify-center gap-3 mb-5" role="group" aria-label="Elegir video"></div>
 
             <div id="demo-video-box" class="relative rounded-xl shadow-2xl overflow-hidden border-4 border-white bg-gray-900 aspect-video">
                 <video id="demo-video" class="absolute inset-0 w-full h-full object-contain" controls controlslist="nodownload" playsinline preload="metadata"></video>
             </div>
 
+            <!-- Indica qué video se está reproduciendo ahora -->
+            <p id="demo-now" class="text-center text-sm font-medium text-gray-600 mt-4" aria-live="polite"></p>
+
             <div id="demo-empty" class="hidden rounded-xl border-2 border-dashed border-gold bg-white p-12 text-center text-gray-500">
                 Los videos de este plan se están preparando.
             </div>
-
-            <!-- Tira de miniaturas: clic para cambiar el video principal -->
-            <div id="demo-thumbs" class="flex flex-wrap justify-center gap-3 mt-6"></div>
         </div>
     </section>
 
@@ -131,14 +134,33 @@
         const videoEl = document.getElementById("demo-video");
         const thumbsEl = document.getElementById("demo-thumbs");
         const panelEl = document.getElementById("demo-panel");
+        const nowEl = document.getElementById("demo-now");
 
-        function selectVideo(video) {
+        /* Estilos del selector de video: activo vs inactivo */
+        const THUMB_BASE   = "flex flex-col items-start gap-0.5 rounded-xl border-2 px-4 py-2.5 text-left shadow-sm transition focus:outline-none focus:ring-2 focus:ring-gold";
+        const THUMB_ACTIVE = "border-gold bg-gold text-gray-900";
+        const THUMB_IDLE   = "border-gray-200 bg-white text-gray-700 hover:border-gold hover:bg-yellow-50";
+        let currentIndex = 0;
+
+        function paintThumbs() {
+            const thumbs = thumbsEl.querySelectorAll("button");
+            thumbs.forEach(function (btn, i) {
+                const active = i === currentIndex;
+                btn.className = THUMB_BASE + " " + (active ? THUMB_ACTIVE : THUMB_IDLE);
+                btn.setAttribute("aria-current", active ? "true" : "false");
+            });
+        }
+
+        function selectVideo(video, index) {
+            currentIndex = index;
             videoEl.src = video.src;
             if (video.poster) {
                 videoEl.poster = video.poster;
             } else {
                 videoEl.removeAttribute("poster");
             }
+            nowEl.textContent = "▶ Reproduciendo: " + (video.titulo || ("Video " + (index + 1)));
+            paintThumbs();
             videoEl.load();
             const playing = videoEl.play();
             if (playing && typeof playing.catch === "function") {
@@ -152,6 +174,7 @@
 
             descEl.textContent = plan.descripcion;
             thumbsEl.innerHTML = "";
+            nowEl.textContent = "";
 
             if (!plan.videos || plan.videos.length === 0) {
                 videoBox.classList.add("hidden");
@@ -165,34 +188,28 @@
             emptyBox.classList.add("hidden");
             videoBox.classList.remove("hidden");
 
-            plan.videos.forEach(function (video) {
+            plan.videos.forEach(function (video, index) {
                 const thumb = document.createElement("button");
                 thumb.type = "button";
-                thumb.className =
-                    "w-28 md:w-32 rounded-lg overflow-hidden border-2 border-gold/60 hover:border-gold shadow focus:outline-none focus:ring-2 focus:ring-gold";
 
-                if (video.poster) {
-                    const img = document.createElement("img");
-                    img.src = video.poster;
-                    img.alt = video.titulo || "Video";
-                    img.loading = "lazy";
-                    img.className = "w-full h-16 md:h-20 object-cover";
-                    thumb.appendChild(img);
-                } else {
-                    const label = document.createElement("span");
-                    label.className = "block w-full h-16 md:h-20 bg-gray-900 text-white text-xs flex items-center justify-center px-2";
-                    label.textContent = video.titulo || "Video";
-                    thumb.appendChild(label);
-                }
+                const num = document.createElement("span");
+                num.className = "text-[11px] font-bold uppercase tracking-wider opacity-70";
+                num.textContent = "▶ Ver video " + (index + 1);
 
+                const title = document.createElement("span");
+                title.className = "text-sm font-bold";
+                title.textContent = video.titulo || ("Video " + (index + 1));
+
+                thumb.appendChild(num);
+                thumb.appendChild(title);
                 thumb.addEventListener("click", function () {
-                    selectVideo(video);
+                    selectVideo(video, index);
                 });
 
                 thumbsEl.appendChild(thumb);
             });
 
-            selectVideo(plan.videos[0]);
+            selectVideo(plan.videos[0], 0);
         }
 
         tabButtons.forEach(function (button) {
